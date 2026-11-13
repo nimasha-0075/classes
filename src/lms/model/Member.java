@@ -1,3 +1,4 @@
+
 package lms.model;
 
 public class Member implements Comparable<Member> {
@@ -64,6 +65,11 @@ public class Member implements Comparable<Member> {
 
     public void incrementBorrowedCount() {
         setBorrowedCount(borrowedCount + 1);
+    }
+
+    // Decrease borrowed count when an item is returned
+    public void decrementBorrowedCount() {
+        setBorrowedCount(borrowedCount - 1);
     }
 
     @Override
