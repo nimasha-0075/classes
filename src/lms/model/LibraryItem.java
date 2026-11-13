@@ -1,3 +1,4 @@
+
 package lms.model;
 
 import lms.exception.ItemNotAvailableException;
@@ -7,11 +8,13 @@ public abstract class LibraryItem implements Loanable {
     private String id;
     private String title;
     private boolean isBorrowed;
+    private Member borrower;
 
     public LibraryItem(String id, String title) {
         setId(id);
         setTitle(title);
         this.isBorrowed = false;
+        this.borrower = null;
     }
 
     public String getId() {
@@ -50,30 +53,35 @@ public abstract class LibraryItem implements Loanable {
     public void loan(Member member) throws ItemNotAvailableException {
 
         if (isBorrowed) {
-           throw new ItemNotAvailableException( title+"is already on loan");
+            throw new ItemNotAvailableException(
+                    title + " is already on loan.");
         }
 
         if (member.getBorrowedCount() >= member.getMaxBorrowLimit()) {
-            throw new ItemNotAvailableException(member.getName()+"has reached the limit of "+member.getMaxBorrowLimit()+"items");
+            throw new ItemNotAvailableException(
+                    member.getName() + " has reached the limit of "
+                            + member.getMaxBorrowLimit() + " items.");
         }
 
         setBorrowed(true);
+        borrower = member;
         member.incrementBorrowedCount();
 
         System.out.println(getTitle() + " loaned to "
                 + member.getName());
     }
 
-
     @Override
-    public void returnItem() {
+    public void returnItem() throws ItemNotAvailableException {
 
         if (!isBorrowed) {
-            throw new IllegalArgumentException(title+"is not loan");
+            throw new ItemNotAvailableException(
+                    title + " is not on loan.");
         }
 
-        borrower.decrementBorrowCount();
+        borrower.decrementBorrowedCount();
 
+        borrower = null;
         setBorrowed(false);
 
         System.out.println(getTitle() + " returned.");
